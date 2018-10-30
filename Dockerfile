@@ -6,7 +6,7 @@ ENV SCREEN_WIDTH 1920
 ENV SCREEN_HEIGHT 1080
 ENV SCREEN_DEPTH 24
 ENV DISPLAY :99.0
-ENV ELECTRON_CHROMEDRIVER_VERSION 1.7.1
+ENV ELECTRON_CHROMEDRIVER_VERSION 2.0.0
 
 USER root
 
@@ -39,7 +39,7 @@ RUN apt-get -qqy install \
 # Chromedriver dependencies
 #=====
 RUN apt-get -qqy install \
-  libnss3-dev libgconf-2-4 fuse libgtk2.0-0 libasound2
+  libnss3-dev libgconf-2-4 fuse libgtk2.0-0 libgtk-3-0 libasound2
 
 RUN rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 

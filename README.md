@@ -1,4 +1,4 @@
-# electron-chromedriver
+# docker-electron-chromedriver
 
 Runs an instance of [electron-chromedriver](https://www.npmjs.com/package/electron-chromedriver) as a Docker container and includes a VNC server to watch the tests run.
 
@@ -12,7 +12,7 @@ Create a `docker-compose.yml` file similar to the following:
 
 ```yml
 chromedriver:
-  image: achingbrain/electron-chromedriver:1.7.1
+  image: paulwib/docker-electron-chromedriver:2.0.0
   volumes:
     - /dev/fuse:/dev/fuse
     - ./build:/app # Your app will be available in the /app dir in the container
