@@ -4,17 +4,32 @@ Runs an instance of [electron-chromedriver](https://www.npmjs.com/package/electr
 
 In a nutshell you build your app, mount the build folder as a volume inside this Docker container using `docker-compose` then configure an instance of [Selenium Webdriver](https://www.npmjs.com/package/selenium-webdriver) to connect to chromedriver inside the container and run your tests.
 
-Currently only works on Linux hosts as it requires [fuse](https://github.com/libfuse/libfuse) inside the container.
+## Building
+
+To build an image with a specific version of electron-chromedriver installed:
+
+```
+$ docker build . -t docker-electron-chromedriver:3.0.0 --build-arg ELECTRON_CHROMEDRIVER_VERSION=3.0.0
+```
+
+Tag it as needed and push it to your container repo e.g.
+
+```
+$ docker tag docker-electron-chromedriver:3.0.0 myusername/docker-electron-chromedriver:3.0.0
+$ docker push myusername/docker-electron-chromedriver:3.0.0
+```
+
+Replace `myusername` with whatever user name you have for your container repository.
 
 ## How to use
 
 Create a `docker-compose.yml` file similar to the following:
 
 ```yml
-chromedriver:
-  image: paulwib/docker-electron-chromedriver:2.0.0
+myelectronapp:
+  image: myusername/docker-electron-chromedriver:3.0.0
   volumes:
-    - /dev/fuse:/dev/fuse
+    - /dev/shm:/dev/shm
     - ./build:/app # Your app will be available in the /app dir in the container
   environment:
     SCREEN_WIDTH: 1920
@@ -23,9 +38,6 @@ chromedriver:
   ports:
     - "9515:9515" # Chromedriver port, host:container
     - "5900:5900" # VNC server port, host:container
-  cap_add:
-    - SYS_ADMIN
-  privileged: true
 ```
 
 Configure electron-chromedriver with the following env vars:
@@ -42,16 +54,16 @@ SCREEN_DEPTH 24
 Finally create a driver and use it to run your tests:
 
 ```javascript
-const webdriver = require('selenium-webdriver')
+const { Builder, Browser } = require('selenium-webdriver')
 
-const driver = new webdriver.Builder()
+const driver = new Builder()
   .usingServer('http://localhost:9515')
   .withCapabilities({
     chromeOptions: {
       binary: '/app/path-to-my-app'
     }
   })
-  .forBrowser('electron')
+  .forBrowser(Browser.CHROME)
   .build()
 ```
 
